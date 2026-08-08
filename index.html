@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
 
     <title></title>
 
     <style>
+
         * {
             margin: 0;
             padding: 0;
@@ -23,6 +27,7 @@
             background: #000;
         }
 
+        /* FULL SCREEN VIDEO */
         video {
             position: fixed;
             inset: 0;
@@ -34,50 +39,128 @@
             height: 100dvh;
 
             object-fit: cover;
+
+            background: #000;
         }
+
+
+        /* SOUND BUTTON */
+        #soundBtn {
+
+            position: fixed;
+
+            right: 18px;
+            bottom: 18px;
+
+            width: 48px;
+            height: 48px;
+
+            border: none;
+            border-radius: 50%;
+
+            background: rgba(0, 0, 0, 0.55);
+
+            backdrop-filter: blur(8px);
+
+            color: white;
+
+            font-size: 22px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            z-index: 10;
+
+            transition: 0.25s ease;
+
+            -webkit-tap-highlight-color: transparent;
+        }
+
+
+        #soundBtn:hover {
+            transform: scale(1.08);
+
+            background: rgba(0, 0, 0, 0.75);
+        }
+
+
+        #soundBtn:active {
+            transform: scale(0.92);
+        }
+
     </style>
+
 </head>
 
 <body>
 
-<video
-    id="video"
-    autoplay
-    loop
-    muted
-    playsinline
-    webkit-playsinline
-    preload="auto"
->
-    <source src="video.mp4" type="video/mp4">
-</video>
 
-<script>
+    <!-- VIDEO -->
 
-const video = document.getElementById("video");
+    <video
+        id="video"
+        autoplay
+        muted
+        loop
+        playsinline
+        webkit-playsinline
+        preload="auto"
+    >
 
-/* Maximum volume for the video itself */
-video.volume = 1;
+        <source src="video.mp4" type="video/mp4">
 
-/* Start automatically */
-video.play().catch(() => {});
+    </video>
 
 
-/*
-   First interaction:
-   - Unmute
-   - Set video volume to maximum
-*/
-document.addEventListener("click", function () {
+    <!-- ONLY SOUND BUTTON -->
 
-    video.muted = false;
-    video.volume = 1;
+    <button id="soundBtn" aria-label="Toggle sound">
+        🔇
+    </button>
 
-    video.play();
 
-}, { once: true });
+    <script>
 
-</script>
+        const video = document.getElementById("video");
+        const soundBtn = document.getElementById("soundBtn");
+
+
+        // Start muted so autoplay works
+        video.muted = true;
+        video.volume = 1;
+
+        video.play().catch(() => {});
+
+
+        // Toggle sound
+        soundBtn.addEventListener("click", function (event) {
+
+            event.stopPropagation();
+
+            video.muted = !video.muted;
+
+            if (video.muted) {
+
+                soundBtn.textContent = "🔇";
+
+            } else {
+
+                soundBtn.textContent = "🔊";
+
+                video.volume = 1;
+
+                video.play().catch(() => {});
+
+            }
+
+        });
+
+
+    </script>
 
 </body>
+
 </html>
