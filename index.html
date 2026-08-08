@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    >
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
     <title></title>
 
@@ -28,7 +25,6 @@
 
         video {
             position: fixed;
-
             inset: 0;
 
             width: 100vw;
@@ -38,46 +34,50 @@
             height: 100dvh;
 
             object-fit: cover;
-
-            background: #000;
         }
     </style>
 </head>
 
 <body>
 
-    <video
-        id="video"
-        autoplay
-        muted
-        loop
-        playsinline
-        webkit-playsinline
-        preload="auto"
-    >
-        <source src="video.mp4" type="video/mp4">
-    </video>
+<video
+    id="video"
+    autoplay
+    loop
+    muted
+    playsinline
+    webkit-playsinline
+    preload="auto"
+>
+    <source src="video.mp4" type="video/mp4">
+</video>
 
-    <script>
+<script>
 
-        const video = document.getElementById("video");
+const video = document.getElementById("video");
 
-        function playVideo() {
-            video.play().catch(() => {});
-        }
+/* Maximum volume for the video itself */
+video.volume = 1;
 
-        playVideo();
+/* Start automatically */
+video.play().catch(() => {});
 
-        video.addEventListener("loadeddata", playVideo);
 
-        document.addEventListener("visibilitychange", () => {
-            if (!document.hidden) {
-                playVideo();
-            }
-        });
+/*
+   First interaction:
+   - Unmute
+   - Set video volume to maximum
+*/
+document.addEventListener("click", function () {
 
-    </script>
+    video.muted = false;
+    video.volume = 1;
+
+    video.play();
+
+}, { once: true });
+
+</script>
 
 </body>
-
 </html>
