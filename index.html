@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -9,9 +10,15 @@
         content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     >
 
+    <meta name="theme-color" content="#000000">
+
     <title></title>
 
     <style>
+
+        /* =====================================================
+           RESET
+        ===================================================== */
 
         * {
             margin: 0;
@@ -19,95 +26,453 @@
             box-sizing: border-box;
         }
 
+
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
         html,
         body {
+
             width: 100%;
             height: 100%;
+
             overflow: hidden;
+
             background: #000;
+
+            overscroll-behavior: none;
+
         }
 
-        /* FULL SCREEN VIDEO */
-        video {
+
+        body {
+
             position: fixed;
+
             inset: 0;
 
-            width: 100vw;
-            height: 100vh;
+            font-family: Arial, sans-serif;
 
-            width: 100dvw;
-            height: 100dvh;
+        }
+
+
+        /* =====================================================
+           BLURRED VIDEO BACKGROUND
+        ===================================================== */
+
+        .background {
+
+            position: fixed;
+
+            inset: -5%;
+
+            width: 110%;
+            height: 110%;
 
             object-fit: cover;
 
-            background: #000;
+            filter: blur(35px);
+
+            transform: scale(1.08);
+
+            opacity: 0;
+
+            transition: opacity 1.5s ease;
+
+            z-index: 0;
+
+            pointer-events: none;
+
         }
 
 
-        /* SOUND BUTTON */
-        #soundBtn {
+        .background.loaded {
+
+            opacity: 0.45;
+
+        }
+
+
+        /* Dark layer over blurred background */
+
+        .background-dark {
 
             position: fixed;
 
-            right: 18px;
-            bottom: 18px;
+            inset: 0;
 
-            width: 48px;
-            height: 48px;
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(0,0,0,0.05),
+                    rgba(0,0,0,0.65)
+                );
 
-            border: none;
+            z-index: 1;
+
+            pointer-events: none;
+
+        }
+
+
+        /* =====================================================
+           MAIN VIDEO
+        ===================================================== */
+
+        .video-container {
+
+            position: fixed;
+
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            z-index: 2;
+
+            opacity: 0;
+
+            transition:
+                opacity 1.2s ease,
+                transform 0.5s ease;
+
+        }
+
+
+        .video-container.visible {
+
+            opacity: 1;
+
+        }
+
+
+        video.main-video {
+
+            width: 100vw;
+
+            height: 100vh;
+
+            width: 100dvw;
+
+            height: 100dvh;
+
+            object-fit: contain;
+
+            background: transparent;
+
+            display: block;
+
+        }
+
+
+        /* =====================================================
+           CINEMATIC VIGNETTE
+        ===================================================== */
+
+        .vignette {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 3;
+
+            pointer-events: none;
+
+            background:
+
+                radial-gradient(
+                    ellipse at center,
+                    transparent 50%,
+                    rgba(0,0,0,0.12) 75%,
+                    rgba(0,0,0,0.48) 100%
+                );
+
+        }
+
+
+        /* =====================================================
+           LOADING / STARTING GLOW
+        ===================================================== */
+
+        .loading-glow {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 4;
+
+            pointer-events: none;
+
+            background:
+
+                radial-gradient(
+                    circle at center,
+                    rgba(255,255,255,0.035),
+                    transparent 55%
+                );
+
+            opacity: 1;
+
+            transition: opacity 1s ease;
+
+        }
+
+
+        .loading-glow.hide {
+
+            opacity: 0;
+
+        }
+
+
+        /* =====================================================
+           SOUND BUTTON
+        ===================================================== */
+
+        .sound-button {
+
+            position: fixed;
+
+            right: max(18px, env(safe-area-inset-right));
+
+            bottom: max(18px, env(safe-area-inset-bottom));
+
+            width: 50px;
+
+            height: 50px;
+
+            border: 1px solid rgba(255,255,255,0.22);
+
             border-radius: 50%;
 
-            background: rgba(0, 0, 0, 0.55);
+            background: rgba(15,15,15,0.42);
 
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(14px);
+
+            -webkit-backdrop-filter: blur(14px);
 
             color: white;
 
-            font-size: 22px;
-
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
+            font-size: 21px;
 
             cursor: pointer;
 
             z-index: 10;
 
-            transition: 0.25s ease;
+            box-shadow:
+                0 8px 30px rgba(0,0,0,0.25),
+                inset 0 1px 1px rgba(255,255,255,0.12);
+
+            transition:
+                transform 0.25s ease,
+                background 0.25s ease,
+                box-shadow 0.25s ease;
 
             -webkit-tap-highlight-color: transparent;
+
+            user-select: none;
+
         }
 
 
-        #soundBtn:hover {
+        /* subtle breathing animation */
+
+        .sound-button::after {
+
+            content: "";
+
+            position: absolute;
+
+            inset: -3px;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(255,255,255,0.18);
+
+            opacity: 0;
+
+            animation: soundPulse 3.5s ease-in-out infinite;
+
+        }
+
+
+        @keyframes soundPulse {
+
+            0%, 100% {
+
+                transform: scale(0.95);
+
+                opacity: 0;
+
+            }
+
+            50% {
+
+                transform: scale(1.12);
+
+                opacity: 0.5;
+
+            }
+
+        }
+
+
+        .sound-button:hover {
+
             transform: scale(1.08);
 
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(20,20,20,0.68);
+
+            box-shadow:
+                0 10px 35px rgba(0,0,0,0.35),
+                inset 0 1px 2px rgba(255,255,255,0.16);
+
         }
 
 
-        #soundBtn:active {
-            transform: scale(0.92);
+        .sound-button:active {
+
+            transform: scale(0.88);
+
+        }
+
+
+        /* Button click animation */
+
+        .sound-button.bounce {
+
+            animation: buttonBounce 0.4s ease;
+
+        }
+
+
+        @keyframes buttonBounce {
+
+            0% {
+                transform: scale(1);
+            }
+
+            35% {
+                transform: scale(0.82);
+            }
+
+            70% {
+                transform: scale(1.12);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .sound-button {
+
+                width: 47px;
+
+                height: 47px;
+
+                right: max(15px, env(safe-area-inset-right));
+
+                bottom: max(15px, env(safe-area-inset-bottom));
+
+                font-size: 20px;
+
+            }
+
+            .background {
+
+                filter: blur(28px);
+
+                opacity: 0.35;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           LANDSCAPE / PC
+        ===================================================== */
+
+        @media (orientation: landscape) {
+
+            .sound-button {
+
+                right: 22px;
+
+                bottom: 20px;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           REDUCE ANIMATIONS IF DEVICE REQUESTS IT
+        ===================================================== */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .background,
+            .video-container,
+            .loading-glow {
+
+                transition: none;
+
+            }
+
+            .sound-button::after {
+
+                animation: none;
+
+            }
+
         }
 
     </style>
 
 </head>
 
+
 <body>
 
 
-    <!-- VIDEO -->
+    <!-- =====================================================
+         BLURRED BACKGROUND
+    ===================================================== -->
 
     <video
-        id="video"
-        autoplay
+        id="backgroundVideo"
+        class="background"
         muted
         loop
         playsinline
         webkit-playsinline
         preload="auto"
+        aria-hidden="true"
     >
 
         <source src="video.mp4" type="video/mp4">
@@ -115,44 +480,270 @@
     </video>
 
 
-    <!-- ONLY SOUND BUTTON -->
+    <!-- Dark overlay -->
 
-    <button id="soundBtn" aria-label="Toggle sound">
+    <div class="background-dark"></div>
+
+
+    <!-- =====================================================
+         MAIN VIDEO
+    ===================================================== -->
+
+    <div class="video-container" id="videoContainer">
+
+        <video
+            id="mainVideo"
+            class="main-video"
+            autoplay
+            muted
+            loop
+            playsinline
+            webkit-playsinline
+            preload="auto"
+        >
+
+            <source src="property.mp4" type="video/mp4">
+
+        </video>
+
+    </div>
+
+
+    <!-- Cinematic edge effect -->
+
+    <div class="vignette"></div>
+
+
+    <!-- Loading glow -->
+
+    <div
+        class="loading-glow"
+        id="loadingGlow">
+    </div>
+
+
+    <!-- =====================================================
+         SOUND BUTTON
+    ===================================================== -->
+
+    <button
+        class="sound-button"
+        id="soundButton"
+        aria-label="Turn sound on">
+
         🔇
+
     </button>
 
 
     <script>
 
-        const video = document.getElementById("video");
-        const soundBtn = document.getElementById("soundBtn");
+        /* =====================================================
+           ELEMENTS
+        ===================================================== */
+
+        const mainVideo =
+            document.getElementById("mainVideo");
+
+        const backgroundVideo =
+            document.getElementById("backgroundVideo");
+
+        const videoContainer =
+            document.getElementById("videoContainer");
+
+        const loadingGlow =
+            document.getElementById("loadingGlow");
+
+        const soundButton =
+            document.getElementById("soundButton");
 
 
-        // Start muted so autoplay works
-        video.muted = true;
-        video.volume = 1;
+        /* =====================================================
+           INITIAL SETTINGS
+        ===================================================== */
 
-        video.play().catch(() => {});
+        mainVideo.muted = true;
+
+        mainVideo.volume = 1;
+
+        backgroundVideo.muted = true;
+
+        backgroundVideo.volume = 1;
 
 
-        // Toggle sound
-        soundBtn.addEventListener("click", function (event) {
+        /* =====================================================
+           START VIDEOS
+        ===================================================== */
+
+        function startVideos() {
+
+            mainVideo.play().catch(() => {});
+
+            backgroundVideo.play().catch(() => {});
+
+        }
+
+
+        startVideos();
+
+
+        /* =====================================================
+           MAIN VIDEO LOADED
+        ===================================================== */
+
+        mainVideo.addEventListener("loadeddata", () => {
+
+            videoContainer.classList.add("visible");
+
+            loadingGlow.classList.add("hide");
+
+            backgroundVideo.classList.add("loaded");
+
+            startVideos();
+
+        });
+
+
+        /* =====================================================
+           BACKGROUND LOADED
+        ===================================================== */
+
+        backgroundVideo.addEventListener("loadeddata", () => {
+
+            backgroundVideo.classList.add("loaded");
+
+            backgroundVideo.play().catch(() => {});
+
+        });
+
+
+        /* =====================================================
+           SOUND BUTTON
+        ===================================================== */
+
+        soundButton.addEventListener("click", function(event) {
+
+            event.preventDefault();
 
             event.stopPropagation();
 
-            video.muted = !video.muted;
 
-            if (video.muted) {
+            /* Toggle mute */
 
-                soundBtn.textContent = "🔇";
+            mainVideo.muted = !mainVideo.muted;
+
+
+            if (mainVideo.muted) {
+
+                soundButton.textContent = "🔇";
+
+                soundButton.setAttribute(
+                    "aria-label",
+                    "Turn sound on"
+                );
 
             } else {
 
-                soundBtn.textContent = "🔊";
+                /* Maximum video volume */
 
-                video.volume = 1;
+                mainVideo.volume = 1;
 
-                video.play().catch(() => {});
+                soundButton.textContent = "🔊";
+
+                soundButton.setAttribute(
+                    "aria-label",
+                    "Mute sound"
+                );
+
+                mainVideo.play().catch(() => {});
+
+            }
+
+
+            /* Button animation */
+
+            soundButton.classList.remove("bounce");
+
+            void soundButton.offsetWidth;
+
+            soundButton.classList.add("bounce");
+
+        });
+
+
+        /* =====================================================
+           FIRST USER INTERACTION
+           Helps browsers allow audio after a tap
+        ===================================================== */
+
+        function firstInteraction() {
+
+            if (!mainVideo.muted) {
+
+                mainVideo.volume = 1;
+
+                mainVideo.play().catch(() => {});
+
+            }
+
+        }
+
+
+        document.addEventListener(
+            "touchstart",
+            firstInteraction,
+            { passive: true }
+        );
+
+
+        document.addEventListener(
+            "click",
+            firstInteraction
+        );
+
+
+        /* =====================================================
+           PAGE VISIBILITY
+        ===================================================== */
+
+        document.addEventListener(
+            "visibilitychange",
+            () => {
+
+                if (!document.hidden) {
+
+                    startVideos();
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           IF VIDEO GETS PAUSED
+        ===================================================== */
+
+        mainVideo.addEventListener("pause", () => {
+
+            if (!document.hidden) {
+
+                mainVideo.play().catch(() => {});
+
+            }
+
+        });
+
+
+        /* =====================================================
+           KEEP VOLUME MAX WHEN UNMUTED
+        ===================================================== */
+
+        mainVideo.addEventListener("volumechange", () => {
+
+            if (!mainVideo.muted) {
+
+                mainVideo.volume = 1;
 
             }
 
