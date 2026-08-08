@@ -2,23 +2,20 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    >
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#080a12">
 
     <title></title>
 
     <style>
 
-        /* =====================================================
+        /* =========================================
            RESET
-        ===================================================== */
+        ========================================= */
 
         * {
             margin: 0;
@@ -26,101 +23,168 @@
             box-sizing: border-box;
         }
 
-
-        /* =====================================================
-           PAGE
-        ===================================================== */
-
         html,
         body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #080a12;
+        }
+
+        body {
+            position: fixed;
+            inset: 0;
+        }
+
+
+        /* =========================================
+           ANIMATED BACKGROUND
+           THIS IS ONLY BEHIND THE VIDEO
+        ========================================= */
+
+        .background {
+            position: fixed;
+            inset: 0;
 
             width: 100%;
             height: 100%;
 
             overflow: hidden;
 
-            background: #000;
+            background:
+                radial-gradient(
+                    circle at 15% 20%,
+                    rgba(93, 135, 255, 0.45),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at 85% 25%,
+                    rgba(192, 104, 255, 0.38),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at 50% 90%,
+                    rgba(47, 220, 190, 0.28),
+                    transparent 40%
+                ),
+                #080a12;
 
-            overscroll-behavior: none;
-
-        }
-
-
-        body {
-
-            position: fixed;
-
-            inset: 0;
-
-            font-family: Arial, sans-serif;
-
-        }
-
-
-        /* =====================================================
-           BLURRED VIDEO BACKGROUND
-        ===================================================== */
-
-        .background {
-
-            position: fixed;
-
-            inset: -5%;
-
-            width: 110%;
-            height: 110%;
-
-            object-fit: cover;
-
-            filter: blur(35px);
-
-            transform: scale(1.08);
-
-            opacity: 0;
-
-            transition: opacity 1.5s ease;
+            animation: backgroundMove 12s ease-in-out infinite alternate;
 
             z-index: 0;
-
-            pointer-events: none;
-
         }
 
 
-        .background.loaded {
+        @keyframes backgroundMove {
 
-            opacity: 0.45;
+            0% {
+                transform: scale(1);
+                filter: brightness(0.9);
+            }
 
+            50% {
+                transform: scale(1.08);
+                filter: brightness(1.08);
+            }
+
+            100% {
+                transform: scale(1.02);
+                filter: brightness(0.95);
+            }
         }
 
 
-        /* Dark layer over blurred background */
+        /* Additional soft floating glow */
 
-        .background-dark {
+        .background::before {
 
-            position: fixed;
+            content: "";
 
-            inset: 0;
+            position: absolute;
+
+            width: 45vw;
+            height: 45vw;
+
+            min-width: 250px;
+            min-height: 250px;
+
+            border-radius: 50%;
 
             background:
                 radial-gradient(
-                    circle at center,
-                    rgba(0,0,0,0.05),
-                    rgba(0,0,0,0.65)
+                    circle,
+                    rgba(255, 170, 120, 0.20),
+                    transparent 70%
                 );
 
-            z-index: 1;
+            top: -15%;
+            left: -10%;
 
-            pointer-events: none;
+            filter: blur(30px);
 
+            animation: glowOne 9s ease-in-out infinite alternate;
         }
 
 
-        /* =====================================================
-           MAIN VIDEO
-        ===================================================== */
+        .background::after {
 
-        .video-container {
+            content: "";
+
+            position: absolute;
+
+            width: 50vw;
+            height: 50vw;
+
+            min-width: 280px;
+            min-height: 280px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(90, 140, 255, 0.22),
+                    transparent 70%
+                );
+
+            right: -15%;
+            bottom: -15%;
+
+            filter: blur(35px);
+
+            animation: glowTwo 11s ease-in-out infinite alternate;
+        }
+
+
+        @keyframes glowOne {
+
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(25vw, 18vh);
+            }
+        }
+
+
+        @keyframes glowTwo {
+
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(-20vw, -15vh);
+            }
+        }
+
+
+        /* =========================================
+           VIDEO AREA
+        ========================================= */
+
+        .video-wrapper {
 
             position: fixed;
 
@@ -132,49 +196,61 @@
             display: flex;
 
             align-items: center;
-
             justify-content: center;
 
             z-index: 2;
 
             opacity: 0;
 
-            transition:
-                opacity 1.2s ease,
-                transform 0.5s ease;
-
+            animation: videoAppear 1.2s ease forwards;
         }
 
 
-        .video-container.visible {
+        @keyframes videoAppear {
 
-            opacity: 1;
+            from {
+                opacity: 0;
+                transform: scale(0.985);
+            }
 
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
 
-        video.main-video {
+        /* =========================================
+           MAIN VIDEO
+        ========================================= */
 
-            width: 100vw;
+        #mainVideo {
 
-            height: 100vh;
+            display: block;
 
-            width: 100dvw;
+            width: 100%;
+            height: 100%;
 
-            height: 100dvh;
+            /*
+                IMPORTANT:
+
+                contain = NO CROPPING
+
+                Video maintains its original
+                aspect ratio.
+            */
 
             object-fit: contain;
 
             background: transparent;
 
-            display: block;
-
         }
 
 
-        /* =====================================================
-           CINEMATIC VIGNETTE
-        ===================================================== */
+        /* =========================================
+           SUBTLE VIGNETTE
+           ONLY VERY LIGHT
+        ========================================= */
 
         .vignette {
 
@@ -187,58 +263,19 @@
             pointer-events: none;
 
             background:
-
                 radial-gradient(
                     ellipse at center,
-                    transparent 50%,
-                    rgba(0,0,0,0.12) 75%,
-                    rgba(0,0,0,0.48) 100%
+                    transparent 62%,
+                    rgba(0, 0, 0, 0.18) 100%
                 );
-
         }
 
 
-        /* =====================================================
-           LOADING / STARTING GLOW
-        ===================================================== */
-
-        .loading-glow {
-
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 4;
-
-            pointer-events: none;
-
-            background:
-
-                radial-gradient(
-                    circle at center,
-                    rgba(255,255,255,0.035),
-                    transparent 55%
-                );
-
-            opacity: 1;
-
-            transition: opacity 1s ease;
-
-        }
-
-
-        .loading-glow.hide {
-
-            opacity: 0;
-
-        }
-
-
-        /* =====================================================
+        /* =========================================
            SOUND BUTTON
-        ===================================================== */
+        ========================================= */
 
-        .sound-button {
+        #soundButton {
 
             position: fixed;
 
@@ -247,25 +284,22 @@
             bottom: max(18px, env(safe-area-inset-bottom));
 
             width: 50px;
-
             height: 50px;
-
-            border: 1px solid rgba(255,255,255,0.22);
 
             border-radius: 50%;
 
-            background: rgba(15,15,15,0.42);
+            border: 1px solid rgba(255,255,255,0.25);
 
-            backdrop-filter: blur(14px);
+            background: rgba(0,0,0,0.42);
 
-            -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
 
             color: white;
 
             display: flex;
 
             align-items: center;
-
             justify-content: center;
 
             font-size: 21px;
@@ -275,24 +309,34 @@
             z-index: 10;
 
             box-shadow:
-                0 8px 30px rgba(0,0,0,0.25),
-                inset 0 1px 1px rgba(255,255,255,0.12);
+                0 8px 25px rgba(0,0,0,0.28),
+                inset 0 1px 1px rgba(255,255,255,0.15);
 
             transition:
                 transform 0.25s ease,
-                background 0.25s ease,
-                box-shadow 0.25s ease;
-
-            -webkit-tap-highlight-color: transparent;
-
-            user-select: none;
-
+                background 0.25s ease;
         }
 
 
-        /* subtle breathing animation */
+        #soundButton:hover {
 
-        .sound-button::after {
+            transform: scale(1.08);
+
+            background: rgba(0,0,0,0.65);
+        }
+
+
+        #soundButton:active {
+
+            transform: scale(0.88);
+        }
+
+
+        /* =========================================
+           SOUND BUTTON PULSE
+        ========================================= */
+
+        #soundButton::after {
 
             content: "";
 
@@ -302,66 +346,40 @@
 
             border-radius: 50%;
 
-            border: 1px solid rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.25);
 
-            opacity: 0;
+            animation: buttonPulse 3.5s ease-in-out infinite;
 
-            animation: soundPulse 3.5s ease-in-out infinite;
-
+            pointer-events: none;
         }
 
 
-        @keyframes soundPulse {
+        @keyframes buttonPulse {
 
-            0%, 100% {
-
+            0%,
+            100% {
                 transform: scale(0.95);
-
                 opacity: 0;
-
             }
 
             50% {
-
-                transform: scale(1.12);
-
+                transform: scale(1.15);
                 opacity: 0.5;
-
             }
-
         }
 
 
-        .sound-button:hover {
+        /* =========================================
+           BUTTON CLICK ANIMATION
+        ========================================= */
 
-            transform: scale(1.08);
+        #soundButton.clicked {
 
-            background: rgba(20,20,20,0.68);
-
-            box-shadow:
-                0 10px 35px rgba(0,0,0,0.35),
-                inset 0 1px 2px rgba(255,255,255,0.16);
-
+            animation: buttonClick 0.4s ease;
         }
 
 
-        .sound-button:active {
-
-            transform: scale(0.88);
-
-        }
-
-
-        /* Button click animation */
-
-        .sound-button.bounce {
-
-            animation: buttonBounce 0.4s ease;
-
-        }
-
-
-        @keyframes buttonBounce {
+        @keyframes buttonClick {
 
             0% {
                 transform: scale(1);
@@ -378,76 +396,64 @@
             100% {
                 transform: scale(1);
             }
-
         }
 
 
-        /* =====================================================
+        /* =========================================
            MOBILE
-        ===================================================== */
+        ========================================= */
 
         @media (max-width: 600px) {
 
-            .sound-button {
+            #soundButton {
 
-                width: 47px;
+                width: 46px;
+                height: 46px;
 
-                height: 47px;
+                font-size: 19px;
 
                 right: max(15px, env(safe-area-inset-right));
 
                 bottom: max(15px, env(safe-area-inset-bottom));
-
-                font-size: 20px;
-
-            }
-
-            .background {
-
-                filter: blur(28px);
-
-                opacity: 0.35;
-
             }
 
         }
 
 
-        /* =====================================================
-           LANDSCAPE / PC
-        ===================================================== */
+        /* =========================================
+           LANDSCAPE
+        ========================================= */
 
         @media (orientation: landscape) {
 
-            .sound-button {
+            #soundButton {
 
-                right: 22px;
-
+                right: 20px;
                 bottom: 20px;
-
             }
 
         }
 
 
-        /* =====================================================
-           REDUCE ANIMATIONS IF DEVICE REQUESTS IT
-        ===================================================== */
+        /* =========================================
+           REDUCED MOTION
+        ========================================= */
 
         @media (prefers-reduced-motion: reduce) {
 
             .background,
-            .video-container,
-            .loading-glow {
+            .background::before,
+            .background::after,
+            #soundButton::after {
 
-                transition: none;
-
+                animation: none;
             }
 
-            .sound-button::after {
+            .video-wrapper {
 
                 animation: none;
 
+                opacity: 1;
             }
 
         }
@@ -460,74 +466,50 @@
 <body>
 
 
-    <!-- =====================================================
-         BLURRED BACKGROUND
-    ===================================================== -->
+    <!-- =========================================
+         ANIMATED BACKGROUND
+         (ONLY VISIBLE WHERE VIDEO DOESN'T COVER)
+    ========================================= -->
 
-    <video
-        id="backgroundVideo"
-        class="background"
-        muted
-        loop
-        playsinline
-        webkit-playsinline
-        preload="auto"
-        aria-hidden="true"
-    >
-
-        <source src="video.mp4" type="video/mp4">
-
-    </video>
+    <div class="background"></div>
 
 
-    <!-- Dark overlay -->
-
-    <div class="background-dark"></div>
-
-
-    <!-- =====================================================
+    <!-- =========================================
          MAIN VIDEO
-    ===================================================== -->
+    ========================================= -->
 
-    <div class="video-container" id="videoContainer">
+    <div class="video-wrapper">
 
         <video
             id="mainVideo"
-            class="main-video"
             autoplay
             muted
             loop
             playsinline
             webkit-playsinline
-            preload="auto"
-        >
+            preload="auto">
 
-            <source src="property.mp4" type="video/mp4">
+            <source
+                src="video.mp4"
+                type="video/mp4">
 
         </video>
 
     </div>
 
 
-    <!-- Cinematic edge effect -->
+    <!-- =========================================
+         SUBTLE VIGNETTE
+    ========================================= -->
 
     <div class="vignette"></div>
 
 
-    <!-- Loading glow -->
-
-    <div
-        class="loading-glow"
-        id="loadingGlow">
-    </div>
-
-
-    <!-- =====================================================
+    <!-- =========================================
          SOUND BUTTON
-    ===================================================== -->
+    ========================================= -->
 
     <button
-        class="sound-button"
         id="soundButton"
         aria-label="Turn sound on">
 
@@ -538,151 +520,109 @@
 
     <script>
 
-        /* =====================================================
+        /* =========================================
            ELEMENTS
-        ===================================================== */
+        ========================================= */
 
-        const mainVideo =
+        const video =
             document.getElementById("mainVideo");
-
-        const backgroundVideo =
-            document.getElementById("backgroundVideo");
-
-        const videoContainer =
-            document.getElementById("videoContainer");
-
-        const loadingGlow =
-            document.getElementById("loadingGlow");
 
         const soundButton =
             document.getElementById("soundButton");
 
 
-        /* =====================================================
-           INITIAL SETTINGS
-        ===================================================== */
+        /* =========================================
+           INITIAL VIDEO SETTINGS
+        ========================================= */
 
-        mainVideo.muted = true;
+        video.muted = true;
 
-        mainVideo.volume = 1;
-
-        backgroundVideo.muted = true;
-
-        backgroundVideo.volume = 1;
+        video.volume = 1;
 
 
-        /* =====================================================
-           START VIDEOS
-        ===================================================== */
+        /* =========================================
+           AUTOPLAY
+        ========================================= */
 
-        function startVideos() {
+        function startVideo() {
 
-            mainVideo.play().catch(() => {});
-
-            backgroundVideo.play().catch(() => {});
+            video.play().catch(() => {});
 
         }
 
 
-        startVideos();
+        startVideo();
 
 
-        /* =====================================================
-           MAIN VIDEO LOADED
-        ===================================================== */
-
-        mainVideo.addEventListener("loadeddata", () => {
-
-            videoContainer.classList.add("visible");
-
-            loadingGlow.classList.add("hide");
-
-            backgroundVideo.classList.add("loaded");
-
-            startVideos();
-
-        });
-
-
-        /* =====================================================
-           BACKGROUND LOADED
-        ===================================================== */
-
-        backgroundVideo.addEventListener("loadeddata", () => {
-
-            backgroundVideo.classList.add("loaded");
-
-            backgroundVideo.play().catch(() => {});
-
-        });
-
-
-        /* =====================================================
+        /* =========================================
            SOUND BUTTON
-        ===================================================== */
+        ========================================= */
 
-        soundButton.addEventListener("click", function(event) {
+        soundButton.addEventListener(
+            "click",
+            function(event) {
 
-            event.preventDefault();
+                event.preventDefault();
 
-            event.stopPropagation();
-
-
-            /* Toggle mute */
-
-            mainVideo.muted = !mainVideo.muted;
+                event.stopPropagation();
 
 
-            if (mainVideo.muted) {
+                /* Toggle */
 
-                soundButton.textContent = "🔇";
+                video.muted = !video.muted;
 
-                soundButton.setAttribute(
-                    "aria-label",
-                    "Turn sound on"
-                );
 
-            } else {
+                if (video.muted) {
 
-                /* Maximum video volume */
+                    soundButton.textContent = "🔇";
 
-                mainVideo.volume = 1;
+                    soundButton.setAttribute(
+                        "aria-label",
+                        "Turn sound on"
+                    );
 
-                soundButton.textContent = "🔊";
+                } else {
 
-                soundButton.setAttribute(
-                    "aria-label",
-                    "Mute sound"
-                );
+                    /* Maximum VIDEO volume */
 
-                mainVideo.play().catch(() => {});
+                    video.volume = 1;
+
+                    soundButton.textContent = "🔊";
+
+                    soundButton.setAttribute(
+                        "aria-label",
+                        "Mute sound"
+                    );
+
+                    video.play().catch(() => {});
+
+                }
+
+
+                /* Button animation */
+
+                soundButton.classList.remove("clicked");
+
+                void soundButton.offsetWidth;
+
+                soundButton.classList.add("clicked");
 
             }
+        );
 
 
-            /* Button animation */
+        /* =========================================
+           FIRST USER TOUCH
+           Browser audio permission
+        ========================================= */
 
-            soundButton.classList.remove("bounce");
+        function userInteraction() {
 
-            void soundButton.offsetWidth;
+            if (!video.muted) {
 
-            soundButton.classList.add("bounce");
+                video.volume = 1;
 
-        });
-
-
-        /* =====================================================
-           FIRST USER INTERACTION
-           Helps browsers allow audio after a tap
-        ===================================================== */
-
-        function firstInteraction() {
-
-            if (!mainVideo.muted) {
-
-                mainVideo.volume = 1;
-
-                mainVideo.play().catch(() => {});
+                video.play().catch(() => {});
 
             }
 
@@ -691,28 +631,28 @@
 
         document.addEventListener(
             "touchstart",
-            firstInteraction,
+            userInteraction,
             { passive: true }
         );
 
 
         document.addEventListener(
             "click",
-            firstInteraction
+            userInteraction
         );
 
 
-        /* =====================================================
-           PAGE VISIBILITY
-        ===================================================== */
+        /* =========================================
+           IF PAGE BECOMES VISIBLE AGAIN
+        ========================================= */
 
         document.addEventListener(
             "visibilitychange",
-            () => {
+            function() {
 
                 if (!document.hidden) {
 
-                    startVideos();
+                    startVideo();
 
                 }
 
@@ -720,34 +660,22 @@
         );
 
 
-        /* =====================================================
-           IF VIDEO GETS PAUSED
-        ===================================================== */
+        /* =========================================
+           PREVENT VIDEO FROM STAYING PAUSED
+        ========================================= */
 
-        mainVideo.addEventListener("pause", () => {
+        video.addEventListener(
+            "pause",
+            function() {
 
-            if (!document.hidden) {
+                if (!document.hidden) {
 
-                mainVideo.play().catch(() => {});
+                    video.play().catch(() => {});
 
-            }
-
-        });
-
-
-        /* =====================================================
-           KEEP VOLUME MAX WHEN UNMUTED
-        ===================================================== */
-
-        mainVideo.addEventListener("volumechange", () => {
-
-            if (!mainVideo.muted) {
-
-                mainVideo.volume = 1;
+                }
 
             }
-
-        });
+        );
 
 
     </script>
