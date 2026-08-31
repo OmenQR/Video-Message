@@ -39,7 +39,7 @@
 
 
         /* =========================================
-           SOFT PREMIUM BACKGROUND
+           PREMIUM BACKGROUND
         ========================================= */
 
         .background {
@@ -53,134 +53,133 @@
 
             background:
                 linear-gradient(
-                    120deg,
+                    125deg,
                     #eeeaf8 0%,
-                    #e9edf9 35%,
-                    #f4eaf1 68%,
-                    #e8f2ef 100%
+                    #e8edf9 34%,
+                    #f5ebf1 68%,
+                    #e8f3ef 100%
                 );
 
             z-index: 0;
         }
 
 
-        /*
-           Instead of obvious glowing circles,
-           we use very large, extremely soft
-           colour fields that slowly drift.
-        */
+        /* =========================================
+           SOFT MOVING LIGHT
+        ========================================= */
 
-        .aurora {
+        .light {
+
             position: absolute;
 
-            width: 85vw;
-            height: 35vw;
+            width: 75vw;
+            height: 18vw;
 
-            min-width: 600px;
-            min-height: 260px;
+            min-width: 500px;
+            min-height: 180px;
 
             border-radius: 50%;
 
-            filter: blur(70px);
+            filter: blur(65px);
 
-            opacity: 0.18;
+            opacity: 0.16;
 
             pointer-events: none;
         }
 
 
-        .aurora.one {
+        .light.one {
 
-            top: -12%;
-            left: -15%;
+            top: 8%;
+            left: -20%;
 
             background:
                 linear-gradient(
                     90deg,
                     #d9c7ff,
-                    #ffc9dc,
-                    #c9dcff
+                    #ffc8df,
+                    #c9ddff
                 );
 
-            transform: rotate(-12deg);
+            transform: rotate(-18deg);
 
             animation:
-                auroraOne 28s ease-in-out infinite alternate;
+                lightMoveOne 24s ease-in-out infinite alternate;
         }
 
 
-        .aurora.two {
+        .light.two {
 
-            right: -20%;
-            bottom: -12%;
+            right: -25%;
+            bottom: 5%;
 
             background:
                 linear-gradient(
                     90deg,
-                    #c7e4ff,
-                    #d7f1e7,
-                    #e8cfff
+                    #c9e4ff,
+                    #d7f0e7,
+                    #e7d0ff
                 );
 
-            transform: rotate(18deg);
+            transform: rotate(16deg);
 
             animation:
-                auroraTwo 34s ease-in-out infinite alternate;
+                lightMoveTwo 30s ease-in-out infinite alternate;
         }
 
 
-        @keyframes auroraOne {
+        @keyframes lightMoveOne {
 
             0% {
                 transform:
-                    translate3d(-4%, -2%, 0)
-                    rotate(-12deg)
+                    translate3d(-2%, 0, 0)
+                    rotate(-18deg)
                     scale(1);
             }
 
             50% {
                 transform:
-                    translate3d(8%, 5%, 0)
-                    rotate(-8deg)
-                    scale(1.08);
+                    translate3d(10%, 5%, 0)
+                    rotate(-12deg)
+                    scale(1.05);
             }
 
             100% {
                 transform:
-                    translate3d(15%, 0%, 0)
-                    rotate(-14deg)
+                    translate3d(20%, 0, 0)
+                    rotate(-20deg)
                     scale(1.02);
             }
         }
 
 
-        @keyframes auroraTwo {
+        @keyframes lightMoveTwo {
 
             0% {
                 transform:
-                    translate3d(4%, 3%, 0)
-                    rotate(18deg)
+                    translate3d(3%, 0, 0)
+                    rotate(16deg)
                     scale(1);
             }
 
             50% {
                 transform:
-                    translate3d(-8%, -5%, 0)
-                    rotate(13deg)
-                    scale(1.08);
+                    translate3d(-9%, -5%, 0)
+                    rotate(11deg)
+                    scale(1.06);
             }
 
             100% {
                 transform:
-                    translate3d(-15%, 0%, 0)
-                    rotate(20deg)
+                    translate3d(-18%, 0, 0)
+                    rotate(18deg)
                     scale(1.02);
             }
         }
 
 
         /* =========================================
-           VERY SUBTLE FILM GRAIN
+           SUBTLE GRAIN
         ========================================= */
 
         .grain {
@@ -189,7 +188,7 @@
 
             inset: 0;
 
-            opacity: 0.035;
+            opacity: 0.025;
 
             pointer-events: none;
 
@@ -201,7 +200,7 @@
 
 
         /* =========================================
-           VIDEO AREA
+           VIDEO
         ========================================= */
 
         .video-wrapper {
@@ -241,10 +240,6 @@
         }
 
 
-        /* =========================================
-           MAIN VIDEO
-        ========================================= */
-
         #mainVideo {
 
             display: block;
@@ -275,14 +270,14 @@
             background:
                 radial-gradient(
                     ellipse at center,
-                    transparent 66%,
-                    rgba(60,50,80,0.08) 100%
+                    transparent 68%,
+                    rgba(55,48,75,0.08) 100%
                 );
         }
 
 
         /* =========================================
-           INSTAGRAM LINK
+           INSTAGRAM GLASS PILL
         ========================================= */
 
         .instagram {
@@ -296,20 +291,19 @@
 
             transform:
                 translateX(-50%)
-                translateY(8px);
+                translateY(12px);
 
-            z-index: 6;
+            z-index: 7;
 
             display: flex;
 
             align-items: center;
 
-            gap: 5px;
+            gap: 6px;
 
-            opacity: 0;
+            padding: 7px 12px 7px 9px;
 
-            animation:
-                instagramAppear 1.2s 0.8s ease forwards;
+            border-radius: 999px;
 
             text-decoration: none;
 
@@ -329,7 +323,7 @@
             letter-spacing: 0.15px;
 
             /*
-               Instagram-inspired gradient
+               Instagram gradient
             */
 
             background:
@@ -346,35 +340,66 @@
 
             -webkit-text-fill-color: transparent;
 
-            transition:
-                transform 0.3s ease,
-                opacity 0.3s ease;
+            /*
+               Glass bubble
+            */
+
+            border:
+                1px solid rgba(255,255,255,0.55);
+
+            background-color:
+                rgba(255,255,255,0.22);
+
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+
+            box-shadow:
+                0 5px 22px rgba(76,65,105,0.10),
+                inset 0 1px 1px rgba(255,255,255,0.65);
+
+            opacity: 0;
+
+            animation:
+                instagramEntrance 1.1s 0.9s ease forwards,
+                instagramFloat 5s 2s ease-in-out infinite;
         }
 
 
-        /* Small Instagram camera icon */
+        /* =========================================
+           INSTAGRAM REAL-STYLE GLYPH
+        ========================================= */
 
         .instagram-icon {
 
-            width: 12px;
-            height: 12px;
-
-            border-radius: 3.5px;
-
             position: relative;
+
+            width: 14px;
+            height: 14px;
+
+            flex-shrink: 0;
+
+            border-radius: 4px;
 
             background:
                 linear-gradient(
                     135deg,
-                    #f58529,
-                    #dd2a7b 45%,
-                    #8134af 75%,
-                    #515bd4
+                    #feda75 0%,
+                    #fa7e1e 25%,
+                    #d62976 55%,
+                    #962fbf 78%,
+                    #4f5bd5 100%
                 );
 
-            flex-shrink: 0;
+            -webkit-text-fill-color: initial;
+
+            box-shadow:
+                0 2px 7px rgba(214,41,118,0.18);
         }
 
+
+        /*
+           Camera lens
+        */
 
         .instagram-icon::before {
 
@@ -392,11 +417,15 @@
                 translate(-50%, -50%);
 
             border:
-                1px solid white;
+                1.3px solid white;
 
             border-radius: 50%;
         }
 
+
+        /*
+           Camera top-right dot
+        */
 
         .instagram-icon::after {
 
@@ -404,17 +433,21 @@
 
             position: absolute;
 
-            width: 2px;
-            height: 2px;
+            width: 2.3px;
+            height: 2.3px;
 
-            right: 2px;
-            top: 2px;
-
-            background: white;
+            top: 2.4px;
+            right: 2.4px;
 
             border-radius: 50%;
+
+            background: white;
         }
 
+
+        /* =========================================
+           INSTAGRAM HOVER
+        ========================================= */
 
         .instagram:hover {
 
@@ -422,7 +455,10 @@
                 translateX(-50%)
                 translateY(-2px);
 
-            opacity: 1;
+            box-shadow:
+                0 8px 28px rgba(76,65,105,0.15),
+                0 0 18px rgba(214,41,118,0.10),
+                inset 0 1px 1px rgba(255,255,255,0.75);
         }
 
 
@@ -430,11 +466,11 @@
 
             transform:
                 translateX(-50%)
-                scale(0.96);
+                scale(0.94);
         }
 
 
-        @keyframes instagramAppear {
+        @keyframes instagramEntrance {
 
             0% {
 
@@ -442,31 +478,43 @@
 
                 transform:
                     translateX(-50%)
-                    translateY(8px);
+                    translateY(12px)
+                    scale(0.92);
+            }
+
+            70% {
+
+                opacity: 0.9;
+
+                transform:
+                    translateX(-50%)
+                    translateY(-2px)
+                    scale(1.02);
             }
 
             100% {
 
-                opacity: 0.88;
+                opacity: 0.9;
 
                 transform:
                     translateX(-50%)
-                    translateY(0);
+                    translateY(0)
+                    scale(1);
             }
         }
 
-
-        /* Very subtle floating effect */
 
         @keyframes instagramFloat {
 
             0%,
             100% {
+
                 margin-bottom: 0;
             }
 
             50% {
-                margin-bottom: 2px;
+
+                margin-bottom: 3px;
             }
         }
 
@@ -577,7 +625,7 @@
 
 
         /* =========================================
-           BUTTON CLICK ANIMATION
+           BUTTON CLICK
         ========================================= */
 
         #soundButton.clicked {
@@ -632,6 +680,11 @@
 
                 font-size: 10px;
 
+                padding:
+                    6px 10px 6px 8px;
+
+                gap: 5px;
+
                 bottom:
                     max(17px, env(safe-area-inset-bottom));
             }
@@ -639,8 +692,10 @@
 
             .instagram-icon {
 
-                width: 11px;
-                height: 11px;
+                width: 12px;
+                height: 12px;
+
+                border-radius: 3.5px;
             }
         }
 
@@ -671,7 +726,7 @@
 
         @media (prefers-reduced-motion: reduce) {
 
-            .aurora,
+            .light,
             #soundButton::after,
             .instagram {
 
@@ -687,7 +742,7 @@
 
             .instagram {
 
-                opacity: 0.88;
+                opacity: 0.9;
 
                 transform:
                     translateX(-50%)
@@ -709,9 +764,9 @@
 
     <div class="background">
 
-        <div class="aurora one"></div>
+        <div class="light one"></div>
 
-        <div class="aurora two"></div>
+        <div class="light two"></div>
 
         <div class="grain"></div>
 
@@ -750,7 +805,7 @@
 
 
     <!-- =========================================
-         INSTAGRAM
+         INSTAGRAM LINK
     ========================================= -->
 
     <a
