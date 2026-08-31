@@ -1,8 +1,8 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta name="viewport"
@@ -11,6 +11,7 @@
     <meta name="theme-color" content="#e9e7f4">
 
     <title></title>
+
 
     <style>
 
@@ -43,7 +44,9 @@
         ========================================= */
 
         .background {
+
             position: fixed;
+
             inset: 0;
 
             width: 100%;
@@ -65,7 +68,7 @@
 
 
         /* =========================================
-           SOFT MOVING LIGHT
+           SOFT MOVING AURORA
         ========================================= */
 
         .light {
@@ -82,9 +85,11 @@
 
             filter: blur(65px);
 
-            opacity: 0.16;
+            opacity: 0.14;
 
             pointer-events: none;
+
+            will-change: transform;
         }
 
 
@@ -104,7 +109,7 @@
             transform: rotate(-18deg);
 
             animation:
-                lightMoveOne 24s ease-in-out infinite alternate;
+                lightMoveOne 28s ease-in-out infinite alternate;
         }
 
 
@@ -124,7 +129,7 @@
             transform: rotate(16deg);
 
             animation:
-                lightMoveTwo 30s ease-in-out infinite alternate;
+                lightMoveTwo 34s ease-in-out infinite alternate;
         }
 
 
@@ -139,14 +144,14 @@
 
             50% {
                 transform:
-                    translate3d(10%, 5%, 0)
+                    translate3d(9%, 4%, 0)
                     rotate(-12deg)
-                    scale(1.05);
+                    scale(1.04);
             }
 
             100% {
                 transform:
-                    translate3d(20%, 0, 0)
+                    translate3d(17%, 0, 0)
                     rotate(-20deg)
                     scale(1.02);
             }
@@ -164,14 +169,14 @@
 
             50% {
                 transform:
-                    translate3d(-9%, -5%, 0)
+                    translate3d(-8%, -4%, 0)
                     rotate(11deg)
-                    scale(1.06);
+                    scale(1.04);
             }
 
             100% {
                 transform:
-                    translate3d(-18%, 0, 0)
+                    translate3d(-16%, 0, 0)
                     rotate(18deg)
                     scale(1.02);
             }
@@ -188,7 +193,7 @@
 
             inset: 0;
 
-            opacity: 0.025;
+            opacity: 0.022;
 
             pointer-events: none;
 
@@ -271,37 +276,50 @@
                 radial-gradient(
                     ellipse at center,
                     transparent 68%,
-                    rgba(55,48,75,0.08) 100%
+                    rgba(55,48,75,0.07) 100%
                 );
         }
 
 
         /* =========================================
-           INSTAGRAM GLASS PILL
+           INSTAGRAM BADGE
+           POSITION IS CONTROLLED BY JAVASCRIPT
         ========================================= */
 
         .instagram {
 
             position: fixed;
 
-            left: 50%;
+            /*
+                JS changes these dynamically.
+                This allows the badge to always
+                stay in unused video space.
+            */
 
-            bottom:
-                max(22px, env(safe-area-inset-bottom));
+            left: var(--ig-left, 50%);
+
+            top: var(--ig-top, auto);
+
+            bottom: var(--ig-bottom, 22px);
 
             transform:
-                translateX(-50%)
-                translateY(12px);
+                translate(-50%, 10px)
+                scale(0.96);
 
-            z-index: 7;
+            z-index: 8;
 
             display: flex;
 
             align-items: center;
 
+            justify-content: center;
+
             gap: 6px;
 
-            padding: 7px 12px 7px 9px;
+            min-width: max-content;
+
+            padding:
+                7px 12px 7px 9px;
 
             border-radius: 999px;
 
@@ -316,23 +334,57 @@
                 Arial,
                 sans-serif;
 
-            font-size: 11px;
+            font-size: 12px;
 
             font-weight: 600;
 
-            letter-spacing: 0.15px;
+            letter-spacing: 0.1px;
+
+            color: #dd2a7b;
+
+            opacity: 0;
 
             /*
-               Instagram gradient
+                Solid enough to separate
+                from the background.
             */
+
+            background:
+                rgba(255, 255, 255, 0.88);
+
+            border:
+                1px solid rgba(255,255,255,0.95);
+
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+
+            box-shadow:
+                0 5px 20px rgba(65,55,90,0.12),
+                inset 0 1px 1px rgba(255,255,255,1);
+
+            will-change:
+                transform,
+                opacity;
+
+            transition:
+                transform 0.28s cubic-bezier(.2,.8,.2,1),
+                box-shadow 0.28s ease;
+        }
+
+
+        /* =========================================
+           INSTAGRAM GRADIENT TEXT
+        ========================================= */
+
+        .instagram-text {
 
             background:
                 linear-gradient(
                     90deg,
-                    #f58529,
-                    #dd2a7b,
-                    #8134af,
-                    #515bd4
+                    #f58529 0%,
+                    #dd2a7b 38%,
+                    #8134af 72%,
+                    #515bd4 100%
                 );
 
             -webkit-background-clip: text;
@@ -340,133 +392,139 @@
 
             -webkit-text-fill-color: transparent;
 
-            /*
-               Glass bubble
-            */
-
-            border:
-                1px solid rgba(255,255,255,0.55);
-
-            background-color:
-                rgba(255,255,255,0.22);
-
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-
-            box-shadow:
-                0 5px 22px rgba(76,65,105,0.10),
-                inset 0 1px 1px rgba(255,255,255,0.65);
-
-            opacity: 0;
+            background-size: 200% 100%;
 
             animation:
-                instagramEntrance 1.1s 0.9s ease forwards,
-                instagramFloat 5s 2s ease-in-out infinite;
+                instagramTextGradient 7s ease-in-out infinite;
+        }
+
+
+        @keyframes instagramTextGradient {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
 
         /* =========================================
-           INSTAGRAM REAL-STYLE GLYPH
+           REAL INSTAGRAM-STYLE ICON
         ========================================= */
 
-        .instagram-icon {
+        .instagram-logo {
 
-            position: relative;
-
-            width: 14px;
-            height: 14px;
+            width: 15px;
+            height: 15px;
 
             flex-shrink: 0;
 
-            border-radius: 4px;
+            display: block;
 
-            background:
-                linear-gradient(
-                    135deg,
-                    #feda75 0%,
-                    #fa7e1e 25%,
-                    #d62976 55%,
-                    #962fbf 78%,
-                    #4f5bd5 100%
+            filter:
+                drop-shadow(
+                    0 2px 4px
+                    rgba(214,41,118,0.18)
                 );
 
-            -webkit-text-fill-color: initial;
-
-            box-shadow:
-                0 2px 7px rgba(214,41,118,0.18);
+            animation:
+                instagramIconPulse 5s ease-in-out infinite;
         }
 
 
-        /*
-           Camera lens
-        */
+        @keyframes instagramIconPulse {
 
-        .instagram-icon::before {
+            0%,
+            100% {
+                transform: scale(1);
+            }
 
-            content: "";
-
-            position: absolute;
-
-            width: 5px;
-            height: 5px;
-
-            left: 50%;
-            top: 50%;
-
-            transform:
-                translate(-50%, -50%);
-
-            border:
-                1.3px solid white;
-
-            border-radius: 50%;
-        }
-
-
-        /*
-           Camera top-right dot
-        */
-
-        .instagram-icon::after {
-
-            content: "";
-
-            position: absolute;
-
-            width: 2.3px;
-            height: 2.3px;
-
-            top: 2.4px;
-            right: 2.4px;
-
-            border-radius: 50%;
-
-            background: white;
+            50% {
+                transform: scale(1.055);
+            }
         }
 
 
         /* =========================================
-           INSTAGRAM HOVER
+           INSTAGRAM BORDER SHIMMER
         ========================================= */
 
-        .instagram:hover {
+        .instagram::before {
 
-            transform:
-                translateX(-50%)
-                translateY(-2px);
+            content: "";
 
-            box-shadow:
-                0 8px 28px rgba(76,65,105,0.15),
-                0 0 18px rgba(214,41,118,0.10),
-                inset 0 1px 1px rgba(255,255,255,0.75);
+            position: absolute;
+
+            inset: -1px;
+
+            border-radius: inherit;
+
+            padding: 1px;
+
+            background:
+                linear-gradient(
+                    110deg,
+                    rgba(245,133,41,0.45),
+                    rgba(221,42,123,0.65),
+                    rgba(129,52,175,0.5),
+                    rgba(81,91,212,0.55),
+                    rgba(245,133,41,0.45)
+                );
+
+            background-size: 250% 100%;
+
+            animation:
+                instagramBorder 6s linear infinite;
+
+            /*
+                Keep only the border visible.
+            */
+
+            -webkit-mask:
+                linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+
+            -webkit-mask-composite: xor;
+
+            mask-composite: exclude;
+
+            pointer-events: none;
         }
 
 
-        .instagram:active {
+        @keyframes instagramBorder {
 
-            transform:
-                translateX(-50%)
-                scale(0.94);
+            from {
+                background-position: 0% 50%;
+            }
+
+            to {
+                background-position: 250% 50%;
+            }
+        }
+
+
+        /* =========================================
+           VERY SUBTLE FLOAT
+        ========================================= */
+
+        .instagram.visible {
+
+            opacity: 0.94;
+
+            animation:
+                instagramEntrance 0.9s
+                cubic-bezier(.2,.8,.2,1)
+                forwards,
+
+                instagramFloat 5.5s
+                ease-in-out
+                1s
+                infinite;
         }
 
 
@@ -477,28 +535,25 @@
                 opacity: 0;
 
                 transform:
-                    translateX(-50%)
-                    translateY(12px)
-                    scale(0.92);
+                    translate(-50%, 12px)
+                    scale(0.94);
             }
 
             70% {
 
-                opacity: 0.9;
+                opacity: 0.94;
 
                 transform:
-                    translateX(-50%)
-                    translateY(-2px)
-                    scale(1.02);
+                    translate(-50%, -1px)
+                    scale(1.01);
             }
 
             100% {
 
-                opacity: 0.9;
+                opacity: 0.94;
 
                 transform:
-                    translateX(-50%)
-                    translateY(0)
+                    translate(-50%, 0)
                     scale(1);
             }
         }
@@ -509,13 +564,45 @@
             0%,
             100% {
 
-                margin-bottom: 0;
+                transform:
+                    translate(-50%, 0);
             }
 
             50% {
 
-                margin-bottom: 3px;
+                transform:
+                    translate(-50%, -3px);
             }
+        }
+
+
+        /* =========================================
+           HOVER
+        ========================================= */
+
+        .instagram:hover {
+
+            transform:
+                translate(-50%, -3px)
+                scale(1.035);
+
+            box-shadow:
+                0 8px 25px
+                rgba(65,55,90,0.16),
+
+                0 0 18px
+                rgba(221,42,123,0.10),
+
+                inset 0 1px 1px
+                rgba(255,255,255,1);
+        }
+
+
+        .instagram:active {
+
+            transform:
+                translate(-50%, 0)
+                scale(0.95);
         }
 
 
@@ -678,44 +765,19 @@
 
             .instagram {
 
-                font-size: 10px;
+                font-size: 11px;
 
                 padding:
-                    6px 10px 6px 8px;
+                    7px 11px 7px 8px;
 
                 gap: 5px;
-
-                bottom:
-                    max(17px, env(safe-area-inset-bottom));
             }
 
 
-            .instagram-icon {
+            .instagram-logo {
 
-                width: 12px;
-                height: 12px;
-
-                border-radius: 3.5px;
-            }
-        }
-
-
-        /* =========================================
-           LANDSCAPE
-        ========================================= */
-
-        @media (orientation: landscape) {
-
-            #soundButton {
-
-                right: 20px;
-                bottom: 20px;
-            }
-
-
-            .instagram {
-
-                bottom: 18px;
+                width: 14px;
+                height: 14px;
             }
         }
 
@@ -727,8 +789,10 @@
         @media (prefers-reduced-motion: reduce) {
 
             .light,
-            #soundButton::after,
-            .instagram {
+            .instagram-text,
+            .instagram-logo,
+            .instagram::before,
+            #soundButton::after {
 
                 animation: none;
             }
@@ -742,11 +806,12 @@
 
             .instagram {
 
-                opacity: 0.9;
+                animation: none;
+
+                opacity: 0.94;
 
                 transform:
-                    translateX(-50%)
-                    translateY(0);
+                    translate(-50%, 0);
             }
         }
 
@@ -759,7 +824,7 @@
 
 
     <!-- =========================================
-         PREMIUM BACKGROUND
+         BACKGROUND
     ========================================= -->
 
     <div class="background">
@@ -774,7 +839,7 @@
 
 
     <!-- =========================================
-         MAIN VIDEO
+         VIDEO
     ========================================= -->
 
     <div class="video-wrapper">
@@ -805,19 +870,90 @@
 
 
     <!-- =========================================
-         INSTAGRAM LINK
+         INSTAGRAM
     ========================================= -->
 
     <a
         class="instagram"
+        id="instagramLink"
         href="https://www.instagram.com/gyankumar00/"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Instagram @gyankumar00">
 
-        <span class="instagram-icon"></span>
 
-        <span>@gyankumar00</span>
+        <!-- Proper Instagram-style SVG -->
+
+        <svg
+            class="instagram-logo"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true">
+
+            <defs>
+
+                <linearGradient
+                    id="igGradient"
+                    x1="0%"
+                    y1="100%"
+                    x2="100%"
+                    y2="0%">
+
+                    <stop
+                        offset="0%"
+                        stop-color="#feda75"/>
+
+                    <stop
+                        offset="25%"
+                        stop-color="#fa7e1e"/>
+
+                    <stop
+                        offset="50%"
+                        stop-color="#d62976"/>
+
+                    <stop
+                        offset="75%"
+                        stop-color="#962fbf"/>
+
+                    <stop
+                        offset="100%"
+                        stop-color="#4f5bd5"/>
+
+                </linearGradient>
+
+            </defs>
+
+
+            <rect
+                x="2"
+                y="2"
+                width="20"
+                height="20"
+                rx="5.5"
+                fill="url(#igGradient)"/>
+
+
+            <circle
+                cx="12"
+                cy="12"
+                r="4.4"
+                fill="none"
+                stroke="white"
+                stroke-width="1.8"/>
+
+
+            <circle
+                cx="17.4"
+                cy="6.7"
+                r="1.25"
+                fill="white"/>
+
+        </svg>
+
+
+        <span class="instagram-text">
+            @gyankumar00
+        </span>
 
     </a>
 
@@ -847,19 +983,18 @@
         const soundButton =
             document.getElementById("soundButton");
 
+        const instagramLink =
+            document.getElementById("instagramLink");
+
 
         /* =========================================
-           INITIAL VIDEO SETTINGS
+           INITIAL VIDEO
         ========================================= */
 
         video.muted = true;
 
         video.volume = 1;
 
-
-        /* =========================================
-           AUTOPLAY
-        ========================================= */
 
         function startVideo() {
 
@@ -869,6 +1004,264 @@
 
 
         startVideo();
+
+
+        /* =========================================
+           DYNAMIC INSTAGRAM POSITION
+           =========================================
+
+           This is the important part.
+
+           We calculate the ACTUAL visible
+           dimensions of the video after
+           object-fit: contain.
+
+           Landscape:
+           -> Instagram goes into LEFT
+              empty area.
+
+           Portrait:
+           -> Instagram goes into BOTTOM
+              empty area.
+        */
+
+        function positionInstagram() {
+
+            const viewportWidth =
+                window.innerWidth;
+
+            const viewportHeight =
+                window.innerHeight;
+
+
+            const videoWidth =
+                video.videoWidth;
+
+            const videoHeight =
+                video.videoHeight;
+
+
+            /*
+               If video metadata isn't loaded yet,
+               wait until it is.
+            */
+
+            if (!videoWidth || !videoHeight) {
+
+                return;
+            }
+
+
+            /*
+               Calculate actual displayed
+               video dimensions with object-fit: contain.
+            */
+
+            const videoRatio =
+                videoWidth / videoHeight;
+
+            const viewportRatio =
+                viewportWidth / viewportHeight;
+
+
+            let displayedWidth;
+            let displayedHeight;
+
+
+            if (videoRatio > viewportRatio) {
+
+                /*
+                   Video limited by width
+                */
+
+                displayedWidth =
+                    viewportWidth;
+
+                displayedHeight =
+                    viewportWidth / videoRatio;
+
+            } else {
+
+                /*
+                   Video limited by height
+                */
+
+                displayedHeight =
+                    viewportHeight;
+
+                displayedWidth =
+                    viewportHeight * videoRatio;
+            }
+
+
+            /*
+               Empty spaces
+            */
+
+            const horizontalSpace =
+                viewportWidth - displayedWidth;
+
+            const verticalSpace =
+                viewportHeight - displayedHeight;
+
+
+            /*
+               Portrait / vertically limited video
+               has useful bottom space.
+            */
+
+            if (
+                verticalSpace > 45 &&
+                verticalSpace >= horizontalSpace
+            ) {
+
+                /*
+                   Put badge in the bottom
+                   empty region.
+                */
+
+                instagramLink.style.setProperty(
+                    "--ig-left",
+                    "50%"
+                );
+
+                instagramLink.style.setProperty(
+                    "--ig-top",
+                    "auto"
+                );
+
+                instagramLink.style.setProperty(
+                    "--ig-bottom",
+                    Math.max(
+                        12,
+                        verticalSpace / 2 - 8
+                    ) + "px"
+                );
+
+            }
+
+
+            /*
+               Landscape / horizontally limited video
+               has empty side space.
+            */
+
+            else if (horizontalSpace > 45) {
+
+                /*
+                   Put badge in LEFT empty region.
+
+                   Center of left empty area:
+                   horizontalSpace / 4
+                */
+
+                const leftPosition =
+                    horizontalSpace / 4;
+
+
+                instagramLink.style.setProperty(
+                    "--ig-left",
+                    leftPosition + "px"
+                );
+
+                instagramLink.style.setProperty(
+                    "--ig-top",
+                    "50%"
+                );
+
+                instagramLink.style.setProperty(
+                    "--ig-bottom",
+                    "auto"
+                );
+
+            }
+
+
+            /*
+               If there isn't enough empty area,
+               hide it instead of placing it
+               over the video.
+            */
+
+            else {
+
+                instagramLink.style.opacity = "0";
+
+                return;
+            }
+
+
+            /*
+               Show after correct position
+               has been calculated.
+            */
+
+            instagramLink.classList.add("visible");
+        }
+
+
+        /* =========================================
+           VIDEO READY
+        ========================================= */
+
+        video.addEventListener(
+            "loadedmetadata",
+            function() {
+
+                positionInstagram();
+
+            }
+        );
+
+
+        /* =========================================
+           WINDOW RESIZE
+        ========================================= */
+
+        let resizeTimer;
+
+
+        window.addEventListener(
+            "resize",
+            function() {
+
+                clearTimeout(resizeTimer);
+
+                resizeTimer =
+                    setTimeout(
+                        positionInstagram,
+                        50
+                    );
+
+            }
+        );
+
+
+        /* =========================================
+           ORIENTATION CHANGE
+        ========================================= */
+
+        window.addEventListener(
+            "orientationchange",
+            function() {
+
+                setTimeout(
+                    positionInstagram,
+                    150
+                );
+
+            }
+        );
+
+
+        /* =========================================
+           INITIAL POSITION CHECK
+        ========================================= */
+
+        setTimeout(
+            positionInstagram,
+            300
+        );
 
 
         /* =========================================
@@ -883,12 +1276,15 @@
 
                 event.stopPropagation();
 
-                video.muted = !video.muted;
+
+                video.muted =
+                    !video.muted;
 
 
                 if (video.muted) {
 
-                    soundButton.textContent = "🔇";
+                    soundButton.textContent =
+                        "🔇";
 
                     soundButton.setAttribute(
                         "aria-label",
@@ -899,7 +1295,8 @@
 
                     video.volume = 1;
 
-                    soundButton.textContent = "🔊";
+                    soundButton.textContent =
+                        "🔊";
 
                     soundButton.setAttribute(
                         "aria-label",
@@ -907,22 +1304,25 @@
                     );
 
                     video.play().catch(() => {});
-
                 }
 
 
-                soundButton.classList.remove("clicked");
+                soundButton.classList.remove(
+                    "clicked"
+                );
 
                 void soundButton.offsetWidth;
 
-                soundButton.classList.add("clicked");
+                soundButton.classList.add(
+                    "clicked"
+                );
 
             }
         );
 
 
         /* =========================================
-           FIRST USER TOUCH
+           USER INTERACTION
         ========================================= */
 
         function userInteraction() {
@@ -932,7 +1332,6 @@
                 video.volume = 1;
 
                 video.play().catch(() => {});
-
             }
 
         }
@@ -991,4 +1390,3 @@
 </body>
 
 </html>
-```
